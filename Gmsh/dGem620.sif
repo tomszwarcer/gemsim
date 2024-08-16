@@ -1,0 +1,147 @@
+Check Keywords Warn
+
+Header 
+  Mesh DB "." "dGem620"
+End
+
+Simulation
+  Coordinate System = Cartesian 3D
+  Simulation type = Steady State
+  Coordinate scaling = 0.001
+  Steady State Max Iterations = 1
+  Output File = "mesh.result"
+  Post File = "mesh.ep"
+End
+
+Constants
+  Permittivity Of Vacuum = 8.8542e-12
+End
+
+! Gas
+Material 1
+  Relative Permittivity = 1
+End
+
+! Glass
+Material 2
+  Relative Permittivity = 6.28
+End
+
+! Copper 
+Material 3
+  Relative Permittivity = 1.0e10
+End
+
+Equation 1
+  Active Solvers(1) = 1
+  Calculate Electric Energy = True
+End
+
+Solver 1
+  Equation = Stat Elec Solver
+  Variable = Potential
+  Variable DOFs = 1
+  Procedure = "StatElecSolve" "StatElecSolver"
+  Calculate Electric Field = False
+  Calculate Electric Flux = False
+  Linear System Solver = Iterative
+  Linear System Iterative Method = BiCGStab
+  Linear System Max Iterations = 1000
+  Linear System Abort Not Converged = True
+  Linear System Convergence Tolerance = 1.0e-10  
+  Linear System Preconditioning = ILU
+  Steady State Convergence Tolerance = 5.0e-7
+End
+
+Body 1 
+  Equation = 1
+  Material = 3
+End
+
+Body 2
+  Equation = 1
+  Material = 3
+End
+
+Body 3 
+  Equation = 1
+  Material = 2
+End
+
+Body 4
+  Equation = 1
+  Material = 3
+End
+
+Body 5
+  Equation = 1
+  Material = 3
+End
+
+Body 6 
+  Equation = 1
+  Material = 2
+End
+
+Body 7
+  Equation = 1
+  Material = 1
+End
+
+!Cathode
+Boundary Condition 1
+  Target Boundaries = 1
+  Potential = -1480
+End
+
+!Anode
+Boundary Condition 2
+  Target Boundaries = 2
+  Potential = 0
+End
+
+!2GEMT
+Boundary Condition 3
+  Target Boundaries = 3
+  Potential = -700
+End
+
+!2GEMB
+Boundary Condition 4
+  Target Boundaries = 4
+  Potential = -80
+End
+
+!1GEMT
+Boundary Condition 5
+  Target Boundaries = 5
+  Potential = -1440
+End
+
+!1GEMB
+Boundary Condition 6
+  Target Boundaries = 6
+  Potential = -820
+End
+
+Boundary Condition 7
+  Target Boundaries = 7
+End
+
+Boundary Condition 8
+  Target Boundaries = 8
+End
+
+Boundary Condition 9
+  Target Boundaries = 9
+  Periodic BC = 7
+  Periodic BC Potential = Logical True
+End
+
+Boundary Condition 10
+  Target Boundaries = 10
+  Periodic BC = 8
+  Periodic BC Potential = Logical True
+End
+
+
