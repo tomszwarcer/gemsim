@@ -15,9 +15,12 @@
 #include <vector>
 using namespace Garfield;
 
-std::vector<double> colls_list(2);
-std::vector<double> tracked_energies = {12.5,12.907};
-std::vector<int> tracked_levels(2);
+std::vector<double> colls_list;
+//track CF4 neutral diss from threshold to ionisation energy
+std::vector<double> tracked_energies_cf4 = {12.5,15.63};
+//track ar excitaion from threshold as given by Seravalli PhD thesis to ionisation energy of CF4
+std::vector<double> tracked_energies_ar = {12.907,15.66};
+std::vector<int> levels_in_range;
 
 struct passOn{
   double x,y,z,t,e,dx,dy,dz;
@@ -38,15 +41,14 @@ int type, int level, Medium* m,
 double e0, double e1,
 double dx0, double dy0, double dz0,
 double dx1, double dy1, double dz1){
-  if (level == tracked_levels[0]){
-    ++colls_list[0];
-  }
-  else if (level == tracked_levels[1] and level != 0){
-    ++colls_list[1];
+  for (int j=0;j<levels_in_range.size();++j){
+    if (level == levels_in_range[j]){
+      ++colls_list[j];
+    }
   }
 }
 
-void mc_micro_track(double ar_percent, int rn){
+void leveltrack(double ar_percent, int rn){
 
   std::string run_number = std::to_string(rn);
 
@@ -146,17 +148,23 @@ void mc_micro_track(double ar_percent, int rn){
   int type;
   std::string descr;
   double e;
-  unsigned int num_levels = gas.GetNumberOfLevels();    
+  unsigned int num_levels = gas.GetNumberOfLevels();
+  //get list of levels in range
   for (int level_index=0;level_index<num_levels;++level_index){
     gas.GetLevel(level_index,ngas,type,descr,e);
-    if (e <= tracked_energies[0] + 0.0001 and e >= tracked_energies[0] - 0.0001){
-      tracked_levels[0] = level_index;
+    if (e <= tracked_energies_cf4[1] + 0.0001 and e >= tracked_energies_cf4[0] - 0.0001){
+      levels_in_range.push_back(level_index);
+      colls_list.push_back(0);
     }
-    else if (e <= tracked_energies[1] + 0.0001 and e >= tracked_energies[1] - 0.0001){
-      tracked_levels[1] = level_index;
+    else if (e <= tracked_energies_ar[1] + 0.0001 and e >= tracked_energies_ar[0] - 0.0001){
+      levels_in_range.push_back(level_index);
+      colls_list.push_back(0);
     }
   }
-  std::cout << "Tracking levels " <<  tracked_levels[0] << ", " << tracked_levels[1] << std::endl;;
+  std::cout << "Tracking levels ";
+  for (int k=0;k<levels_in_range.size();++k){
+    std::cout << levels_in_range[k] << ", "; 
+  }
 
   double xs,ys,zs,xe,ye,ze,ts,te;
   int status;
@@ -220,8 +228,9 @@ void mc_micro_track(double ar_percent, int rn){
   std::ofstream file;
   file.open("/opt/ppd/scratch/szwarcer/paragem/charge_light/cl_600_30/" + run_number + ".csv");
   file << anode_counter << std::endl;
-  file << colls_list[0] << std::endl;
-  file << colls_list[1] << std::endl;
+  for (int i=0;i<levels_in_range.size();++i){
+    file << colls_list[i] << std::endl;
+  }
   file.close();
   std::cout << "ALL DONE!" << std::endl;
 }
