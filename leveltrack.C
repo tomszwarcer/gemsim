@@ -15,13 +15,6 @@
 #include <vector>
 using namespace Garfield;
 
-std::vector<double> colls_list;
-//track CF4 neutral diss from threshold to ionisation energy
-std::vector<double> tracked_energies_cf4 = {12.5,15.63};
-//track ar excitaion from threshold as given by Seravalli PhD thesis to ionisation energy of CF4
-std::vector<double> tracked_energies_ar = {12.907,15.66};
-std::vector<int> levels_in_range;
-
 struct passOn{
   double x,y,z,t,e,dx,dy,dz;
   passOn(double x0,double y0,double z0,double t0,double e0,double dx0,double dy0,double dz0){
@@ -36,14 +29,36 @@ struct passOn{
   }
 };
 
+struct Level{
+  int index;
+  double energy;
+  int gas_index;
+  int type;
+  std::string descr;
+  unsigned int num_colls;
+  std::string id;
+  Level(int idx, double e, int g_i, int t, std::string d, unsigned int n){
+    index = idx;
+    energy = e;
+    gas_index = g_i;
+    type = t;
+    descr = d;
+    num_colls = n;
+    id = std::to_string(g_i) + std::to_string(t) + std::to_string(e);
+  }
+};
+
+std::vector<double> tracked_energies = {11.5,11.63,11.88,12.13,12.38,12.5,12.63,12.88,13.13,13.38,13.63,13.88,14.0,14.13,14.38,14.63,14.88,15.13,15.38,15.63,15.88,16.13,16.38,16.63,16.88,17.13,17.38,17.63,17.88,18.13,18.38,18.63,18.88,19.13,19.38,19.63};
+std::vector<Level> level_list;
+
 void userHandle(double x, double y, double z, double t,
-int type, int level, Medium* m,
+int type, int level_index, Medium* m,
 double e0, double e1,
 double dx0, double dy0, double dz0,
 double dx1, double dy1, double dz1){
-  for (int j=0;j<levels_in_range.size();++j){
-    if (level == levels_in_range[j]){
-      ++colls_list[j];
+  for (int l=0;l<level_list.size();++l){
+    if (level_list[l].index == level_index){
+      ++level_list[l].num_colls;
     }
   }
 }
@@ -58,7 +73,7 @@ void leveltrack(double ar_percent, int rn){
   gas.SetTemperature(293.15);
   gas.SetPressure(60.);
   gas.Initialise(); 
-  gas.LoadGasFile("/opt/ppd/scratch/szwarcer/paragem/gasgain/gastable/table30.gas");
+  gas.LoadGasFile("/opt/ppd/scratch/szwarcer/paragem/gasgain/gastable/table00.gas");
 
   //load ion mobility data
   //gas.LoadIonMobility("/path/to/file");
@@ -144,28 +159,27 @@ void leveltrack(double ar_percent, int rn){
   const double t0 = 0.;
   const double e0 = 0.1;
 
+
+  //set up tracking
   int ngas;
   int type;
   std::string descr;
-  double e;
+  double e_level;
   unsigned int num_levels = gas.GetNumberOfLevels();
-  //get list of levels in range
+  unsigned int cf4_level_counter = 0;
   for (int level_index=0;level_index<num_levels;++level_index){
-    gas.GetLevel(level_index,ngas,type,descr,e);
-    if (e <= tracked_energies_cf4[1] + 0.0001 and e >= tracked_energies_cf4[0] - 0.0001){
-      levels_in_range.push_back(level_index);
-      colls_list.push_back(0);
-    }
-    else if (e <= tracked_energies_ar[1] + 0.0001 and e >= tracked_energies_ar[0] - 0.0001){
-      levels_in_range.push_back(level_index);
-      colls_list.push_back(0);
+    gas.GetLevel(level_index,ngas,type,descr,e_level);
+    for (double energy: tracked_energies){
+      if (1.0*e_level <= energy + 0.0001 and 1.0*e_level >= energy - 0.0001){
+        level_list.push_back(Level(level_index,e_level,ngas,type,descr,0));
+      }
     }
   }
-  std::cout << "Tracking levels ";
-  for (int k=0;k<levels_in_range.size();++k){
-    std::cout << levels_in_range[k] << ", "; 
+  std::cout << "Tracking levels:\n";
+  for (Level &level:level_list){
+    std::cout << level.descr << std::endl; 
   }
-
+  //set up transfer between AvalancheMC and AvalancheMicroscopic
   double xs,ys,zs,xe,ye,ze,ts,te;
   int status;
 
@@ -198,7 +212,7 @@ void leveltrack(double ar_percent, int rn){
       }
     }
   }
-
+  
   std::cout << "transferring "<<transbgem.size() << " to bottom GEM\n";
   //avalanche all the passed-on electrons
   for (passOn &ielectron:transbgem){
@@ -211,6 +225,7 @@ void leveltrack(double ar_percent, int rn){
       }
     }
   }
+  
   std::cout << "transferring "<<bgemind.size() << " to induction region\n";
   //avalanche the ones that made it
   for (passOn &electron:bgemind){
@@ -225,11 +240,13 @@ void leveltrack(double ar_percent, int rn){
     }
   }
 
+
+  //write out
   std::ofstream file;
-  file.open("/opt/ppd/scratch/szwarcer/paragem/charge_light/cl_600_30/" + run_number + ".csv");
+  file.open("/opt/ppd/scratch/szwarcer/paragem/charge_light/cl_550_0/" + run_number + ".csv");
   file << anode_counter << std::endl;
-  for (int i=0;i<levels_in_range.size();++i){
-    file << colls_list[i] << std::endl;
+  for (Level &level:level_list){
+    file << level.id << "," << level.num_colls << std::endl;
   }
   file.close();
   std::cout << "ALL DONE!" << std::endl;

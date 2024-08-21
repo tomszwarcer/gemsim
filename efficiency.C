@@ -15,7 +15,7 @@
 
 using namespace Garfield;
 
-void micro(double ar_percent, int rn){
+void efficiency(double ar_percent, int rn){
 
   std::string run_number = std::to_string(rn);
 
@@ -74,6 +74,8 @@ void micro(double ar_percent, int rn){
   
   //Do avalanche
   aval.AvalancheElectron(x0, y0, z0, t0, e0, 0., 0., 0.);
+  size_t num;
+  num = aval.GetNumberOfElectronEndpoints();
   for (const auto& electron : aval.GetElectrons()){
     if (electron.path.back().z <= anode_pos + 0.01){
       anode_counter += 1;
@@ -83,6 +85,7 @@ void micro(double ar_percent, int rn){
   std::ofstream file;
   file.open("/opt/ppd/scratch/szwarcer/paragem/gasgain/output615_0/" + run_number + ".csv");
   file << anode_counter << std::endl;
+  file << num << std::endl;
   file.close();
   std::cout << "ALL DONE!" << std::endl;
 }

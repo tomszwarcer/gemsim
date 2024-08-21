@@ -1,0 +1,12 @@
+Universe = vanilla
+
+executable              = run_root.sh
+log                     = batch.log
+output                  = batch.out
+error                   = batch.err
+
+arguments = $(ARP) $(RN)
+
+getenv = True
+
+queue ARP,RN from all_runs.txt
