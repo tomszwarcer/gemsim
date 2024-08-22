@@ -12,7 +12,7 @@ Simulation of a double GEM system in Garfield++
 - `outputs/` contains data from simulations of gain, light/charge and efficiency
 - `Gmsh/` contains the Gmsh model file and the `.sif` files needed to run Elmer 
 - `condor/` contains files needed to run this code in parallel
-- `data_analysis` contains data analysis python notebooks
+- `data_analysis/` contains data analysis python notebooks
 
 
 ## What you need
