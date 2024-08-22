@@ -2,7 +2,7 @@
 INPUT_arpercent=$1
 INPUT_runnum=$2
 
-# change to your directory path
+# change to the directory containing your .C file
 cd /opt/ppd/scratch/szwarcer/paragem/charge_light
 
 # required to run ROOT/Garfield (elmer not required)

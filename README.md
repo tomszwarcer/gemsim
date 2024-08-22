@@ -27,4 +27,11 @@ Simulation of a double GEM system in Garfield++
 - You may need to source setupGarfield or do other steps required to run Garfield and ROOT properly
 - You may need to use `chmod` on `run_root.sh` if using condor
 
+## ID system
+
+I have developed a system for assigning IDs to Magboltz levels. This works as follows.
+
+- **1st digit:** the gas index. 0 for CF4, 1 for Ar
+- **2nd digit:** the type. See table 3.2 in the Garfield++ user guide
+- **3rd-last digit:** the energy. There may be floating point errors here so some rounding may be required in post.
  
