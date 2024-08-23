@@ -87,6 +87,7 @@ void e_finder(double ar_percent){
   file.open("/opt/ppd/scratch/szwarcer/paragem/gasgain/energy.csv");
   file << energy << std::endl;
   file << number << std::endl;
+  file << energy/number << std::endl;
   file.close();
   std::cout << "ALL DONE!" << std::endl;
 }

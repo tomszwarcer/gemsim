@@ -5,7 +5,7 @@ Simulation of a double GEM system in Garfield++
 
 - The `.C` files are intended to be run as ROOT macros
 - `mc_micro.C` is a doubleGEM simulation that uses `AvalancheMC` in the induction and transfer regions, and `AvalancheMicroscopic` in the GEMs. It only outputs gain.
-- `e_finder.C` finds the average energy of an electron at a certain point of interest.
+- `e_finder.C` finds the average energy of an electron at a certain point of interest. It computes this value for a single avalanche (ideally you would run many, maybe someone can update this)
 - `efficiency.C` computes the total avalanche size and number of electrons collected at the anode for the double GEM system. It uses `AvalancheMicroscopic`
 - `leveltrack.C` tracks the number of collisions and also number of electrons reaching anode, switching between `AvalancheMC` and `AvalancheMicroscopic`. It can track any number of levels.
 - `gain.ipynb` is a python notebook that produces plots from the gain data
