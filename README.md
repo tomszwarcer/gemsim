@@ -13,6 +13,10 @@ Simulation of a double GEM system in Garfield++
 - `Gmsh/` contains the Gmsh model file and the `.sif` files needed to run Elmer 
 - `condor/` contains files needed to run this code in parallel
 - `data_analysis/` contains data analysis python notebooks
+- `gastable/` contains files needed to generate gas files for use in `AvalancheMC`
+- `gastable/tableArgGen.py` generates input arguments for running `tableGen.C` in parallel
+- `gastable/tableGen.C` generates a gas file for a single electric field
+- `gastable/merge.C` merges the different electric field gas files into a single file for a given Argon percentage
 
 
 ## What you need
