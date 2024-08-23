@@ -1,4 +1,3 @@
-//TODO: ion mobility
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
