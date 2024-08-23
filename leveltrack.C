@@ -104,11 +104,16 @@ void leveltrack(double ar_percent, int rn){
   const double anode_pos = -0.2;
   const double max_sensor_z = 0.34;
 
-   //sensor positions
+  //sensor positions
+  //top of top GEM (make sure it's above electron starting position)
   const double tgemt = 0.32;
+  //bottom of top GEM
   const double tgemb = 0.24;
+  //bottom of transfer region
   const double transb = 0.06;
+  //bottom of bottom GEM
   const double bgemb = -0.01;
+  //bottom of induction region
   const double indb = -0.201;
 
   //this is the region electrons are tracked in

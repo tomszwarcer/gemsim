@@ -27,7 +27,7 @@ struct passOn{
   }
 };
 
-void paragem_multi(double ar_percent, int rn){
+void mc_micro(double ar_percent, int rn){
 
   std::string run_number = std::to_string(rn);
 
@@ -38,7 +38,7 @@ void paragem_multi(double ar_percent, int rn){
   gas.SetPressure(60.);
   gas.Initialise();
   std::cout << "about to load\n";
-  gas.LoadGasFile("/opt/ppd/scratch/szwarcer/boltz/cf4.gas");
+  gas.LoadGasFile("/opt/ppd/scratch/szwarcer/paragem/gasgain/gastable/table00.gas");
   //Setup handover from Elmer
   ComponentElmer fm;
 
@@ -67,10 +67,15 @@ void paragem_multi(double ar_percent, int rn){
 
 
   //sensor positions
+  //top of top GEM (make sure it's above electron starting position)
   const double tgemt = 0.32;
+  //bottom of top GEM
   const double tgemb = 0.24;
+  //bottom of transfer region
   const double transb = 0.06;
+  //bottom of bottom GEM
   const double bgemb = -0.01;
+  //bottom of induction region
   const double indb = -0.201;
 
   //this is the region electrons are tracked in
