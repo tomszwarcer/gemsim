@@ -3,7 +3,13 @@ Simulation of a double GEM system in Garfield++
 
 ## Info
 
-- The `.C` files are intended to be run as ROOT macros
+- The `.C` files are intended to be run as ROOT macros EXCEPT `basic_simulator.C` which will require a `CMakeLists.txt` (not included)
+- The basic simulation functionality is shown in `basic_simulator.C`. It has the capacity for tracking collisions in a given level, and for reporting gain. It uses `AvalancheMicroscopic` everywhere
+- I implemented a system for not doing microscopic tracking in the transfer region, in the name of efficiency. I didn't get time to test whether this was actually more efficient, but it probably is. The code that does this could do with a rewrite for clarity and readability.
+- There is room for improvement by randomising the electron starting coordinates and seeing the effect on gain. Also there may be a dependence on the average energy, which is hard coded using a result from `e_finder.C` (see below). There is certainly a better way of doing this.
+
+## Files
+
 - `mc_micro.C` is a doubleGEM simulation that uses `AvalancheMC` in the induction and transfer regions, and `AvalancheMicroscopic` in the GEMs. It only outputs gain.
 - `e_finder.C` finds the average energy of an electron at a certain point of interest. It computes this value for a single avalanche (ideally you would run many, maybe someone can update this)
 - `efficiency.C` computes the total avalanche size and number of electrons collected at the anode for the double GEM system. It uses `AvalancheMicroscopic`. If you're interested in gain using only AvalancheMicroscopic, you can use this.
