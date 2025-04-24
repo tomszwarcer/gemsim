@@ -35,7 +35,7 @@ struct Level{
 
 int main(){
 
-  double ar_percent = 30.0;
+  double ar_percent = 0.0;
 
   //Create MM object for gas and set it up
   MediumMagboltz gas;
@@ -50,7 +50,7 @@ int main(){
   //configure the field map. Make sure to set it to the one with the correct GEM dV
   std::string mapDir = "";
   //The path must end in a "/"
-  mapDir += "/Users/tomszwarcer/Documents/MIGDAL/GEM7/";
+  mapDir += "/Users/tomszwarcer/Documents/MIGDAL/UPDATE/fieldmaps/600/";
 
   fm.Initialise(mapDir + "mesh.header",
                 mapDir + "mesh.elements",
@@ -69,7 +69,7 @@ int main(){
   const double hole_radius = 0.017/2.;
   const double height = sqrt(3)*pitch;
   const double anode_pos = -0.2 + 0.0001;
-  const double max_sensor_z = 0.34;
+  const double max_sensor_z = 0.5;
 
   //this is the region electrons are tracked in
   Sensor sensor;
@@ -83,7 +83,7 @@ int main(){
   //starting positions 
   double x0 = 0;
   double y0 = 0;
-  const double z0 = 0.06;
+  const double z0 = 0.4;
   const double t0 = 0.;
   const double e0 = 1;
 
@@ -93,7 +93,7 @@ int main(){
   file.open("/Users/tomszwarcer/Documents/MIGDAL/UPDATE/test.txt");
 
   const unsigned int n_runs = 1;
-  bool track_levels = true;
+  bool track_levels = false;
   const double track_levels_above = 13.99;
 
   for (int i=1; i <= n_runs; i++){
